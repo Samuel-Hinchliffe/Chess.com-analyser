@@ -1,0 +1,25 @@
+{
+   "action": {
+ 
+      "default_popup": "popup.html",
+      "default_title": "A stockfish based chess engine for chess.com games."
+   },
+   "author": "Samuel Hinchliffe",
+   "background": {
+      "service_worker": "background.js"
+   },
+   "content_scripts": [ {
+      "js": [ "jquery.js", "content.js" ],
+      "matches": [ "https://www.chess.com/play/*", "https://www.chess.com/game/live/*" ]
+   } ],
+   "description": "A stockfish based chess solver for chess.com. Automatically highlight best moves.",
+
+   "manifest_version": 3,
+   "name": "AHHHHH",
+   "options_ui": {
+      "open_in_tab": false,
+      "page": "options.html"
+   },
+   "permissions": [ "activeTab", "storage", "identity", "identity.email" ],
+   "version": "2.3"
+}

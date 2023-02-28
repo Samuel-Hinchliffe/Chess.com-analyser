@@ -1,0 +1,41 @@
+# Dependency directories
+node_modules/
+
+# Output directories
+dist/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+.env.test
+.env.development
+.env.production
+
+# Log files
+*.log
+
+# Build files
+build/
+*.d.ts
+*.map
+*.js
+
+# IDE and editor files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Test files
+coverage/
+
+# Miscellaneous
+.DS_Store
+Thumbs.db
+.history
