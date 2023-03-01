@@ -6,6 +6,7 @@
         "webextensions": true
     },
     "extends": "airbnb-base",
+
     "overrides": [
     ],
     "parserOptions": {
@@ -13,5 +14,7 @@
         "sourceType": "module"
     },
     "rules": {
-    }
+        "camelcase": "error",
+        "quotes": ["error", "double"]
+    },
 }

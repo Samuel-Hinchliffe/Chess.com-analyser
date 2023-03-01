@@ -1,9 +1,6 @@
 import ChessSolverOptions from "../interfaces/ChessSolverOptions";
 import defaultChessSolverOptions from '../config/defaultChessSolverOptions';
-import EngineResult from "./EngineResult";
-
 importScripts('./stockfish.js');
-
 export default class ChessSolver {
 
     engine: any;
@@ -13,6 +10,10 @@ export default class ChessSolver {
     engineEvaluation: number;
     lastBestMove: string;
 
+    /**
+     * @constructor
+     * @param {ChessSolverOptions} [options=defaultChessSolverOptions] - ChessSolver options
+     * */
     constructor(protected options: ChessSolverOptions = defaultChessSolverOptions) {
         this.options = options;
         this.isSolving = false;
@@ -23,7 +24,6 @@ export default class ChessSolver {
 
         this.engine = STOCKFISH();
         this.engine.onmessage = (output: string) => this.engineHandler(output);
-
 
         this.populateSettings();
         this.registerEventListeners();
@@ -49,12 +49,10 @@ export default class ChessSolver {
      * 
      * @param currentFen {string} The current FEN string to solve.
      * @private
-     * @returns {void}
+     * @returns {boolean} true
      */
     private solveForBestPosition(currentFen: string): boolean {
-        if (!this.options.enabled) {
-            return false;
-        }
+        if (!this.options.enabled) return false;
 
         // Store the current FEN string as the last FEN string.
         this.lastFen = currentFen;
@@ -72,8 +70,15 @@ export default class ChessSolver {
         return true;
     }
 
-    private getBestMoveFromInfoCommand(uciOutput: string) : string {
-                // Split the UCI output into individual parts
+     /**
+     * Extracts the best move from the UCI output of the Stockfish engine.
+     * 
+     * @param {string} uciOutput - The UCI output from the Stockfish engine.
+     * @private
+     * @returns {string} The best position FEN Code. 
+     */
+    private getBestMoveFromInfoCommand(uciOutput: string): string {
+        // Split the UCI output into individual parts
         const parts = uciOutput.split(' ');
 
         // Find the index of the "pv" part
@@ -86,30 +91,64 @@ export default class ChessSolver {
 
         // Extract the best move from the "pv" part
         const bestMove = parts.slice(pvIndex + 1).join(' ').split(' ');
-        console.log('info best move');
-        console.log(bestMove[0]);
         return bestMove[0];
     }
 
+     /**
+     * This method gets the best move from a "bestmove" UCI command string and 
+     * also handles the queue of FEN positions to solve.
+     * 
+     * @private
+     * @param {string} bestMove - The best move in UCI format.
+     * @returns {string} The best move in UCI format.
+     */
+    private getBestMoveFromBestMoveCommand(bestMove: string): string {
+        chrome.storage.local.set({ isSolving: false });
+        this.isSolving = false;
+        if (this.fenSolveQueue.length) {
+            const nextFen = this.fenSolveQueue.shift();
+            this.solveForBestPosition(nextFen as string);
+        }
+        return bestMove;
+    }
+
+    /**
+     * Updates the UI with the result of the best move and engine evaluation.
+     * @private
+     * @param {string} bestMove - The best move determined by the chess engine.
+     * @param {string} depth - The depth at which the engine found the best move.
+     * @returns {void}
+     */
+    private updateUIforBestMove(bestMove: string, depth: string) : void {
+        chrome.storage.local.set({
+            solver_result: {
+                best_move: bestMove,
+                fen: this.lastFen,
+                evaluation: this.engineEvaluation,
+                depth: depth,
+            },
+        });
+    }
+
+    /**
+     * This function is called every time the Stockfish engine outputs a message.
+     * It handles the message by extracting relevant information from it and updating the UI.
+     * @param {string} output - The output message from the Stockfish engine.
+     * @returns {void}
+     */
     private engineHandler(output: string): void {
-        console.log('engineHandler', output);
+        console.log('engineHandler: ', output);
 
         // UCI engine's have a horrible output.
         // We have to split it all up to get an understanding.
-        let args = output.split(' ');
+        let args: string[] = output.split(' ');
         let command = args[0];
-        let bestMove : string = args[1];
+        let bestMove = args[1];
+        let depth = args[2];
 
         switch (command) {
             case 'bestmove':
-                console.log('bestmove', args[1]);
-                chrome.storage.local.set({ isSolving: false });
-                this.isSolving = false;
-                if (this.fenSolveQueue.length) {
-                    const nextFen = this.fenSolveQueue.shift();
-                    this.solveForBestPosition(nextFen as string);
-                }
-                bestMove = args[1];
+                bestMove = this.getBestMoveFromBestMoveCommand(bestMove);
                 break;
             case 'info':
                 bestMove = this.getBestMoveFromInfoCommand(output);
@@ -119,17 +158,7 @@ export default class ChessSolver {
 
         if (!bestMove) bestMove = this.lastBestMove;
         this.lastBestMove = bestMove;
-        console.log('bestmove', bestMove);
-        console.log('lastbestmove', this.lastBestMove);
-
-        chrome.storage.local.set({
-            solver_result: {
-              best_move: bestMove,
-              fen: this.lastFen,
-              evaluation: this.engineEvaluation,
-              depth: args[2],
-            },
-          });
+        this.updateUIforBestMove(bestMove, depth)
     }
 
     /**
@@ -185,8 +214,8 @@ export default class ChessSolver {
                         this.engine.postMessage('ucinewgame');
                         break;
                     case 'stopSolve':
-
                         // Halt all processes.
+                        this.engine.postMessage('stop');
                         this.engine.postMessage('ucinewgame');
                         break;
                 }

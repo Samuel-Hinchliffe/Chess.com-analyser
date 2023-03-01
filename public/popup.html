@@ -1,36 +1,169 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <meta name = "viewport" content = "width=device-width, initial-scale = 1.0">
-    <meta http-equiv = "X-UA-Compatible" content = "ie=edge">
-    <title>Chess.com BestMove</title>
-    <link href = "style.css" rel = "stylesheet" type = "text/css">
-    <script src="jquery.js"></script>
-  </head>
-  <body>
-    <div class="container">
-      <div class="top-settings">
-        <input type="checkbox" id="switch" /><label for="switch"></label>
-        <div class="status-div"><p id="status"></p></div>
-        <div class="blob green"></div>
-      </div>
-      <div style="margin-bottom: 0px;">
-        <h3 style="display: inline-block; align-items: center; margin-bottom:4px; padding-left:5px">Engine Evaluation</h3>
-        <span style="display: inline-block" title="Which side is winning, as determined by the engine. +1 is roughly equivelent to being up a pawn, but both position and material impact the score.">
-          </span>
-      </div>
-      <div class="evaluation-container">
-        <div class="evaluation-bar"></div>
-        <p class="evaluation">+0.0</p>
-      </div>
-      <!-- <div>
-        <h3 style="display: inline-block; align-items: center; margin-bottom:1px; padding-left:5px">Opening Book</h3>
-        <span style="display: inline-block" title="Opening book moves ordered by frequency. Hover over a move to highlight it on the board."><img src="info-icon.webp" alt="more info" style="width:12px; margin-bottom:-1.5px"></span>
-      </div> -->
-      <!-- <ul class="opening-moves-list" id="opening-moves-list">
-      </ul> -->
-    </div>
-    <script src = "popup.js"></script>
-  </body>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Chess.com Analyser</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700;1,900&display=swap" rel="stylesheet">
+        <style>
+      :root {
+        --black: #312E2B;
+        --brown: #79583F;
+        --white: #FFFFFF;
+      }
+
+      * {
+        box-sizing: border-box;
+        transition: background-color 0.2s     cubic-bezier(0, -1.85, .27, 1.75);
+      }
+
+      html, body {
+        color: var(--white);
+        background-color: var(--black);
+        margin: 0px;
+        border-radius: 25px;
+        text-align: center;
+        font-family: 'Source Sans Pro', sans-serif;
+      }
+
+      .floating-window {
+    width: 232px;
+    height: 266px;
+    background-color: var(--black);
+    border: 3px solid var(--brown);
+    color: #FFFFFF;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+h1 {
+    font-size: 1.2rem;
+    margin: 0px;
+}
+
+.floating-window-title {
+    padding: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    border-bottom: 3px solid #bca17f;
+}
+
+		.floating-window-content {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			height: 155px;
+		}
+
+		.floating-window-content img {
+    width: 90px;
+    height: 90px;
+    margin-bottom: 10px;
+}
+
+		.floating-window-content p {
+      font-size: 18px;
+			margin: 0;
+		}
+
+		.floating-window-footer {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-top: 3px solid #bca17f;
+    justify-content: center;
+}
+
+.toggle {
+	 /* position: absolute; */
+	 /* top: 50%; */
+	 /* left: 50%; */
+	 /* transform: translate3d(-50%, -50%, 0); */
+	 display: flex;
+	 align-items: center;
+	 /* gap: 20px; */
+	 justify-content: center;
+	 gap: 20px;
+}
+ .toggle:before {
+	 content: 'OFF';
+	 /* position: relative; */
+	 left: -56px;
+	 top: 30px;
+	 font-size: 18px;
+	 color: #fff;
+}
+ .toggle:after {
+	 content: 'ON';
+	 right: -46px;
+	 top: 30px;
+	 font-size: 18px;
+}
+ .toggle label {
+	 position: relative;
+	 display: inline-block;
+	 width: 25px;
+	 height: 25px;
+	 background-color: #df6d5c;
+	 border-radius: 50px;
+	 cursor: pointer;
+	 -webkit-tap-highlight-color: transparent;
+}
+ .toggle label:before {
+	 content: "";
+	 position: absolute;
+	 top: 50%;
+	 left: 50%;
+	 transform: translate(-50%, -50%);
+	 transition: width 0.2s cubic-bezier(0, -1.85, 0.27, 1.75);
+	 height: 14px;
+	 width: 14px;
+	 background-color: #df6d5c;
+	 border-radius: 46px;
+	 box-shadow: inset 0px 0px 0px 8px #fff;
+}
+ .toggle input {
+	 display: none;
+}
+ .toggle input:checked + label {
+	 background-color: #a1c858;
+}
+ .toggle input:checked + label:before {
+	 width: 5px;
+	 background-color: #fff;
+}
+ .on {
+	 background-color: #a1c858
+}
+ .on .toggle:before {
+	 color: #a1c858
+}
+ .on .toggle:after {
+	 color: #fff;
+}
+        </style>
+    </head>
+    <body>
+        <div class="floating-window">
+            <div class="floating-window-title">
+                <h1>Chess Analyzer</h1>
+            </div>
+            <div class="floating-window-content">
+                <img src="idle.svg" alt="Idle" id="robot">
+                <p id="status">Idle</p>
+            </div>
+            <div class="floating-window-footer">
+                <div class="toggle">
+                    <input type="checkbox" id="toggle">
+                    <label for="toggle"></label>
+                </div>
+            </div>
+        </div>
+        <script src="popup.js"></script>
+    </body>
 </html>

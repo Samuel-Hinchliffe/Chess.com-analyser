@@ -4,10 +4,10 @@
  *
  * @interface
  * @default {
- *   enabled: true,
- *   num_all_time_solves: 0,
- *   engine_highlight_color: '#1BACB0',
- *   max_depth: 25
+ * enabled               : true,
+ * num_all_time_solves   : 0,
+ * engine_highlight_color: '#1BACB0',
+ * max_depth             : 25
  * }
  *
  * @property {boolean} [enabled=true] - Whether the chess solver is enabled.
@@ -16,10 +16,10 @@
  */
 
 export default interface ChessSolverOptions {
-    enabled?: boolean;
+    enabled?    : boolean;
     engineColor?: string;
-    maxDepth?: number;
+    maxDepth?   : number;
     maxSolveTime: number;
-    defaultFen: string;
+    defaultFen  : string;
 }
 

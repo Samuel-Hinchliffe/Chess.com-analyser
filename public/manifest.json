@@ -1,25 +1,26 @@
 {
    "action": {
- 
-      "default_popup": "popup.html",
-      "default_title": "A stockfish based chess engine for chess.com games."
+      "default_popup": "popup.html"
    },
+   "version_name": "First Release",
    "author": "Samuel Hinchliffe",
    "background": {
       "service_worker": "background.js"
    },
+   "icons": {
+      "16": "icon.png",
+      "32": "icon.png",
+      "48": "icon.png",
+      "128": "icon.png"
+  },
    "content_scripts": [ {
       "js": [ "jquery.js", "content.js" ],
       "matches": [ "https://www.chess.com/play/*", "https://www.chess.com/game/live/*" ]
    } ],
-   "description": "A stockfish based chess solver for chess.com. Automatically highlight best moves.",
+   "description": "Free and open-source stockfish solver for Chess.com. Highlighting the best move on the board.",
 
    "manifest_version": 3,
-   "name": "AHHHHH",
-   "options_ui": {
-      "open_in_tab": false,
-      "page": "options.html"
-   },
-   "permissions": [ "activeTab", "storage", "identity", "identity.email" ],
-   "version": "2.3"
+   "name": "Chess.com Analyzer",
+   "permissions": [ "activeTab", "storage"],
+   "version": "1.0"
 }

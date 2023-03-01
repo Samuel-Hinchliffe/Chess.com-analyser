@@ -4,10 +4,10 @@
  * Represents the result of a chess engine operation.
  * 
  * @default {
- *  bestMove: '',
-    fen:'',
-    evaluation: '',
-    depth: 0,
+ * bestMove  : '',
+   fen       : '',
+   evaluation: '',
+   depth     : 0,
  * }
  * 
  * @interface
@@ -19,9 +19,9 @@
  */
 
 export default interface EngineResultOptions {
-    bestMove?: string;
-    fen?: string;
-    maxDepth?: string;
+    bestMove? : string;
+    fen?      : string;
+    maxDepth? : string;
     evaluation: string;
-    depth: number;
+    depth     : number;
 }
