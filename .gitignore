@@ -17,9 +17,7 @@ dist/
 
 # Build files
 build/
-*.d.ts
 *.map
-*.js
 
 # IDE and editor files
 .vscode/
