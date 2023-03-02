@@ -2,18 +2,34 @@ const toggle = document.getElementById("toggle");
 const statusText = document.getElementById("status");
 const robot = document.getElementById("robot");
 
-toggle.checked = true;
-statusText.innerHTML = "Idle";
+chrome.storage.local.get(["enabled"], ({ enabled }) => {
+	if(enabled) toggle.checked = true;
+	else toggle.checked = false;
+});
+
 
 messageActiveTab({ type: "isBoardPresent" }, (response) => {
+	
 	if (!response){
 		setRobotStatus("No Board", "sleeping.svg");
 		toggle.checked = false;
 	}
 	else
 		chrome.storage.local.get(["isSolving"], ({ isSolving }) => {
-			if (!toggle.checked) setRobotStatus("Disabled", "sleeping.svg");
-			else setRobotStatus(isSolving ? "Solving" : "Idle", isSolving ? "solving.svg" : "idle.svg");
+			if (!toggle.checked){
+				setRobotStatus("Disabled", "sleeping.svg");	
+				return;
+			}
+
+			if (!isSolving){
+				setRobotStatus('Idle', "idle.svg")
+				return;
+			}
+
+			if (isSolving){
+				setRobotStatus('Solving', "solving.svg")
+				return
+			}
 		});
 });
 
@@ -41,11 +57,11 @@ chrome.storage.onChanged.addListener(function (changes) {
 toggle.addEventListener("change", function () {
 	if (toggle.checked) {
 		chrome.storage.local.set({ enabled: true });
-		setRobotStatus("Solving", "solving.svg");
+		setRobotStatus("Idle", "idle.svg");
 		return;
 	} else {
 		chrome.storage.local.set({ enabled: false });
-		setRobotStatus("Idle", "idle.svg");
+		setRobotStatus("Idle", "sleeping.svg");
 	}
 });
 
