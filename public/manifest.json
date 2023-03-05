@@ -17,10 +17,10 @@
       "js": [ "jquery.js", "content.js" ],
       "matches": [ "https://www.chess.com/play/*", "https://www.chess.com/game/live/*" ]
    } ],
-   "description": "Free and open-source stockfish solver for Chess.com. Highlighting the best move on the board.",
+   "description": "Improve your chess skills with Chess.com Analyzer - a free app to analyzes your game using Stockfish to highlight the best move on the board",
 
    "manifest_version": 3,
    "name": "Chess.com Analyzer",
    "permissions": [ "activeTab", "storage"],
-   "version": "1.0"
+   "version": "1.2"
 }
