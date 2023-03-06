@@ -17,7 +17,7 @@
       "js": [ "jquery.js", "content.js" ],
       "matches": [ "https://www.chess.com/play/*", "https://www.chess.com/game/live/*" ]
    } ],
-   "description": "Improve your chess skills with Chess.com Analyzer - a free app to analyzes your game using Stockfish to highlight the best move on the board",
+   "description": "Improve your chess skills with Chess.com Analyzer - a free app to analyzes your game using Stockfish to highlight the best move",
 
    "manifest_version": 3,
    "name": "Chess.com Analyzer",
